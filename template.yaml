@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AutoStopStart-EC2-2
+
+Resources:
+  AutoStopStartEC2:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: AutoStopStart-EC2
+      CodeUri: AutoStopStart-EC2/AutoStopStart-EC2.zip
+      Handler: AutoStopStart-EC2
+      Role: !GetAtt AutoStopStartEC2IamRole.Arn
+      Runtime: go1.x
+      Timeout: 30
+  AutoStart:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: AutoStart
+      Name: AutoStart
+      ScheduleExpression: cron(0 0 * * ? *) # JST 9:00
+      State: ENABLED
+      Targets:
+        -
+          Arn: !GetAtt AutoStopStartEC2.Arn
+          Id: TargetFunctionV1
+  AutoStop:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: AutoStop
+      Name: AutoStop
+      ScheduleExpression: cron(0 11 * * ? *) # JST 20:00
+      State: ENABLED
+      Targets:
+        - 
+          Arn: !GetAtt AutoStopStartEC2.Arn
+          Id: TargetFunctionV1
+  AutoStopStartEC2InvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AutoStopStartEC2
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt AutoStopStartEC2.Arn
+  AutoStopStartEC2IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AutoStopStart-EC2-IamRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies: 
+        - PolicyName: AutoStopStart-EC2-IamPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+            - Effect: Allow
+              Action:
+                - ec2:Describe*
+                - ec2:StartInstances
+                - ec2:StopInstances
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
