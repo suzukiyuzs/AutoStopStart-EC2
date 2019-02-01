@@ -6,7 +6,7 @@ Resources:
   AutoStopStartEC2:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: AutoStopStart-EC2
+      FunctionName: AutoStopStart-EC2-3
       CodeUri: AutoStopStart-EC2/AutoStopStart-EC2.zip
       Handler: AutoStopStart-EC2
       Role: !GetAtt AutoStopStartEC2IamRole.Arn
@@ -23,6 +23,19 @@ Resources:
         -
           Arn: !GetAtt AutoStopStartEC2.Arn
           Id: TargetFunctionV1
+  AutoStartEC2InvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AutoStopStartEC2
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn:
+        !GetAtt
+          - AutoStart
+          - Arn
+    DependsOn:
+      - AutoStopStartEC2
+      - AutoStart
   AutoStop:
     Type: AWS::Events::Rule
     Properties:
@@ -34,13 +47,19 @@ Resources:
         - 
           Arn: !GetAtt AutoStopStartEC2.Arn
           Id: TargetFunctionV1
-  AutoStopStartEC2InvokeLambda:
+  AutoStopEC2InvokeLambda:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref AutoStopStartEC2
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
-      SourceArn: !GetAtt AutoStopStartEC2.Arn
+      SourceArn:
+        !GetAtt
+          - AutoStop
+          - Arn
+    DependsOn:
+      - AutoStopStartEC2
+      - AutoStop
   AutoStopStartEC2IamRole:
     Type: AWS::IAM::Role
     Properties:

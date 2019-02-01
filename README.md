@@ -1,5 +1,4 @@
-# AutoStopStart EC2
-# ( AWS Serverless Application Model Golang & holiday_jp-go )
+# AutoStopStart EC2 - AWS Serverless Application Model Golang & holiday_jp-go
 
 ## Architecture
 - Lambda
