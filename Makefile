@@ -10,5 +10,5 @@ clean:
 	
 build:
 	GOOS=linux GOARCH=amd64 go build -o AutoStopStart-EC2/AutoStopStart-EC2 ./AutoStopStart-EC2
-	zip AutoStopStart-EC2/AutoStopStart-EC2.zip AutoStopStart-EC2/AutoStopStart-EC2
+	zip -j AutoStopStart-EC2/AutoStopStart-EC2.zip AutoStopStart-EC2/AutoStopStart-EC2
 
