@@ -6,7 +6,8 @@ deps:
 	go get -u github.com/holiday-jp/holiday_jp-go
 
 clean: 
-	rm -rf ./AutoStopStart-EC2/AutoStopStart-EC2
+	rm -rf ./AutoStopStart-EC2/AutoStopStart-EC2*
+	rm -rf ./output.yaml
 	
 build:
 	GOOS=linux GOARCH=amd64 go build -o AutoStopStart-EC2/AutoStopStart-EC2 ./AutoStopStart-EC2

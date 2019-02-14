@@ -6,7 +6,7 @@ Resources:
   AutoStopStartEC2:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: AutoStopStart-EC2-3
+      FunctionName: AutoStopStart-EC2
       CodeUri: AutoStopStart-EC2/AutoStopStart-EC2.zip
       Handler: AutoStopStart-EC2
       Role: !GetAtt AutoStopStartEC2IamRole.Arn
@@ -17,7 +17,7 @@ Resources:
     Properties:
       Description: AutoStart
       Name: AutoStart
-      ScheduleExpression: cron(0 0 * * ? *) # JST 9:00
+      ScheduleExpression: cron(0 0 ? * MON-FRI *) # MON-FRI 9:00 JST
       State: ENABLED
       Targets:
         -
@@ -41,7 +41,7 @@ Resources:
     Properties:
       Description: AutoStop
       Name: AutoStop
-      ScheduleExpression: cron(0 11 * * ? *) # JST 20:00
+      ScheduleExpression: cron(0 11 ? * MON-FRI *) # MON-FRI 20:00 JST
       State: ENABLED
       Targets:
         - 

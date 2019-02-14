@@ -12,6 +12,8 @@
 
 ## Compiling & Deploying
 ```
+make deps
+make build
 sam package --template-file template.yaml --output-template-file output.yaml --s3-bucket <<S3 Bucket>>
 sam deploy --template-file output.yaml --stack-name <<Stack Name>> --capabilities CAPABILITY_NAMED_IAM
 ```
